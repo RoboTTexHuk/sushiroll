@@ -75,6 +75,7 @@ class AntarcticaRepository {
     final packageInfo = await PackageInfo.fromPlatform();
     final language = Platform.localeName.split('_')[0];
     final timezone = tzu.local.name;
+
     return PenguinDeviceModel(
       penguinId: penguinId ?? 'no_penguin',
       instanceIceberg: "iceberg-${DateTime.now().millisecondsSinceEpoch}",
