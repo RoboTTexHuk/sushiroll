@@ -53,6 +53,7 @@ dependencies:
   advertising_id: ^2.4.0
   app_tracking_transparency: ^2.0.6+1
   provider: ^6.1.2
+  shared_preferences: ^2.2.2
 
 
 

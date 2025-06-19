@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show MethodChannel;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
 import 'package:timezone/data/latest.dart' as tzd;
 import 'package:timezone/timezone.dart' as tzu;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -16,6 +17,7 @@ import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:url_launcher/url_launcher.dart' show canLaunchUrl, launchUrl, LaunchMode;
 
 import 'WP.dart' show SushiRollPushPage;
+import 'myAT.dart' show CustomATTDialogScreen;
 
 final List<String> BANANA_AD_URLS = [
   ".*.doubleclick.net/.*",
@@ -298,6 +300,7 @@ class CatWebViewModel extends ChangeNotifier {
         "useruid": analyticsVM.pineappleId,
       },
     };
+    print("DDD AAA"+data.toString());
     await injector
         .dataMegaInjector
         .dataSubInjector
@@ -306,7 +309,6 @@ class CatWebViewModel extends ChangeNotifier {
   }
 }
 
-// --------- MAIN -------------
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -317,6 +319,10 @@ void main() async {
   }
   tzd.initializeTimeZones();
 
+  // NEW: Проверяем первый запуск
+  final prefs = await SharedPreferences.getInstance();
+  final isFirstLaunch = prefs.getBool('is_first_launch') ?? true;
+
   runApp(
     MultiProvider(
       providers: [
@@ -325,7 +331,11 @@ void main() async {
         ChangeNotifierProvider(create: (context) => BananaSingleton().analyticsVM),
         ChangeNotifierProvider(create: (context) => BananaSingleton().pushManager),
       ],
-      child: MaterialApp(home: ChubbyTokenInitPage()),
+      child: MaterialApp(
+        home: isFirstLaunch
+            ? CustomATTDialogScreen()
+            : ChubbyTokenInitPage(),
+      ),
     ),
   );
 }
